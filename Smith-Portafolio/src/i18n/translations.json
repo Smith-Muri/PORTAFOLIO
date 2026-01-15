@@ -1,0 +1,115 @@
+{
+  "es": {
+    "nav": {
+      "home": "Inicio",
+      "about": "Sobre mí",
+      "projects": "Proyectos",
+      "skills": "Habilidades",
+      "education": "Educación",
+      "contact": "Contacto"
+    },
+    "hero": {
+      "badge": "Disponible para proyectos",
+      "subtitle": "Desarrollador de Software especializado en crear experiencias digitales únicas y memorables.",
+      "viewProjects": "Ver proyectos",
+      "contact": "Contactar",
+      "downloadCV": "Descargar CV"
+    },
+    "about": {
+      "title": "Sobre mí",
+      "text1": "Estudiante de Tecnología en Desarrollo de Software con pasión por crear aplicaciones web innovadoras y funcionales. Me especializo en el desarrollo backend, pero también tengo experiencia en frontend y bases de datos.",
+      "text2": "Utilizo tecnologías modernas como React, Astro, Tailwind CSS y Node.js para construir experiencias de usuario fluidas. Mi enfoque combina principios simples del diseño con principios SOLID.",
+      "text3": "Fuera del código, disfruto de los videojuegos, estudiar sobre desarrollo de software, ademas de mejorar mis habilidades tecnicas con retos de programacion.",
+      "experience": "Años de experiencia",
+      "projects": "Proyectos completados",
+      "clients": "Clientes satisfechos"
+    },
+    "projects": {
+      "title": "Proyectos destacados",
+      "modelWeb": {
+        "title": "Sitio Web de Modelaje",
+        "description": "Sitio web sobre modalej, donde abarca varios modelos, eventos, cultara y mercado de la Moda."
+      },
+      "portfolio": {
+        "title": "Portfolio",
+        "description": "Portafolio personal."
+      },
+      "upcoming": {
+        "title": "Proximamente",
+        "description": "Proximamente."
+      }
+    },
+    "skills": {
+      "title": "Habilidades Técnicas"
+    },
+    "education": {
+      "title": "Educación"
+    },
+    "contact": {
+      "title": "¿Hablamos?",
+      "description": "Estoy abierto a nuevos proyectos y nuevas oportunidades. ¡No dudes en contactarme!",
+      "name": "Nombre",
+      "email": "Correo",
+      "message": "Mensaje",
+      "send": "Enviar mensaje",
+      "location": "Medellín, Colombia"
+    }
+  },
+  "en": {
+    "nav": {
+      "home": "Home",
+      "about": "About",
+      "projects": "Projects",
+      "skills": "Skills",
+      "education": "Education",
+      "contact": "Contact"
+    },
+    "hero": {
+      "badge": "Available for projects",
+      "subtitle": "Software Developer specialized in creating unique and memorable digital experiences.",
+      "viewProjects": "View projects",
+      "contact": "Contact",
+      "downloadCV": "Download CV"
+    },
+    "about": {
+      "title": "About me",
+      "text1": "Technology student in Software Development with passion for creating innovative and functional web applications. I specialize in backend development, but also have experience in frontend and databases.",
+      "text2": "I use modern technologies like React, Astro, Tailwind CSS and Node.js to build smooth user experiences. My approach combines simple design principles with SOLID principles.",
+      "text3": "Outside of code, I enjoy video games, studying software development, and improving my technical skills with programming challenges.",
+      "experience": "Years of experience",
+      "projects": "Completed projects",
+      "clients": "Satisfied clients"
+    },
+    "projects": {
+      "title": "Featured Projects",
+      "modelWeb": {
+        "title": "Modeling Website",
+        "description": "Website about modeling, covering various models, events, culture and fashion market."
+      },
+      "portfolio": {
+        "title": "Portfolio",
+        "description": "Personal portfolio."
+      },
+      "upcoming": {
+        "title": "Coming Soon",
+        "description": "Coming soon."
+      }
+    },
+    "skills": {
+      "title": "Technical Skills"
+    },
+    "education": {
+      "title": "Education"
+    },
+    "contact": {
+      "title": "Let's talk?",
+      "description": "I'm open to new projects and opportunities. Don't hesitate to contact me!",
+      "name": "Name",
+      "email": "Email",
+      "message": "Message",
+      "send": "Send message",
+      "location": "Medellín, Colombia"
+    }
+  }
+}
+

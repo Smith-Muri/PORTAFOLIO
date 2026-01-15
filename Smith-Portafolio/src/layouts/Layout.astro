@@ -1,0 +1,158 @@
+---
+const { title = "Portafolio", siteTitle = "Smith" } = Astro.props;
+import "../styles/global.css";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+---
+
+<!DOCTYPE html>
+<html lang="es" id="root-html">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+
+    <style is:global>
+      .reveal {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+      }
+      .reveal.active {
+        opacity: 1;
+        transform: translateY(0);
+      }
+  
+      html { scroll-behavior: smooth; }
+    </style>
+  </head>
+  <body class="bg-black text-white min-h-screen antialiased relative overflow-x-hidden">
+    
+    <Header siteTitle={siteTitle} />
+
+    <main class="relative z-10">
+      <slot />
+    </main>
+
+    <Footer />
+    <script>
+      import translations from '../i18n/translations.json';
+
+      (function(){
+        if (typeof window === 'undefined') return;
+
+        
+        function getTranslation(key: string, lang: string): string | null {
+          const keys = key.split('.');
+          let value: any = (translations as any)[lang];
+          
+          for (const k of keys) {
+            if (value && typeof value === 'object' && k in value) {
+              value = value[k];
+            } else {
+              return null;
+            }
+          }
+          
+          return typeof value === 'string' ? value : null;
+        }
+
+        
+        function translatePage(lang: string): void {
+          const elements = document.querySelectorAll('[data-label]');
+          elements.forEach(el => {
+            const key = el.getAttribute('data-label');
+            if (!key) return;
+            const translation = getTranslation(key, lang);
+            if (translation) {
+              el.textContent = translation;
+            }
+          });
+
+         
+          const dynamicElements = document.querySelectorAll('[data-i18n]');
+          dynamicElements.forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            if (!key) return;
+            const translation = getTranslation(key, lang);
+            if (translation) {
+              if (el.tagName === 'IMG') {
+                (el as HTMLImageElement).alt = translation;
+              } else if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+                (el as HTMLInputElement).placeholder = translation;
+              } else if (el.hasAttribute('aria-label')) {
+                el.setAttribute('aria-label', translation);
+              } else {
+                el.textContent = translation;
+              }
+            }
+          });
+        }
+
+        const sections = Array.from(document.querySelectorAll('section[id]'));
+        const reveals = Array.from(document.querySelectorAll('.reveal'));
+        const links = Array.from(document.querySelectorAll('.nav-link'));
+        if (!sections.length || !links.length) return;
+        
+        const map: Record<string, Element> = {};
+        links.forEach(a => {
+          const href = a.getAttribute('href');
+          if (!href) return;
+          const idx = href.indexOf('#');
+          if (idx !== -1) {
+            const id = href.substring(idx + 1);
+            if (id) map[id] = a;
+          }
+        });
+        
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              links.forEach(l => l.classList.remove('active'));
+              const id = (entry.target as Element).id;
+              if (map[id]) map[id].classList.add('active');
+            }
+          });
+        }, { root: null, rootMargin: '0px 0px -60% 0px', threshold: 0.1 });
+        
+        const revealObserver = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) entry.target.classList.add('active');
+          });
+        }, { threshold: 0.1 });
+
+        sections.forEach(s => observer.observe(s));
+        reveals.forEach(r => revealObserver.observe(r));
+        
+        if (location.hash) {
+          const id = location.hash.substring(1);
+          if (map[id]) {
+            links.forEach(l => l.classList.remove('active'));
+            map[id].classList.add('active');
+          }
+        }
+        
+        document.addEventListener('click', (e: Event) => {
+          const target = e.target as HTMLElement;
+          if (target && target.matches('.nav-link')) {
+            const details = document.querySelector('details.nav-mobile') as HTMLDetailsElement;
+            if (details && details.open) details.open = false;
+          }
+        });
+
+        window.addEventListener('languagechange', (e: Event) => {
+          const customEvent = e as CustomEvent;
+          const html = document.getElementById('root-html');
+          if (html) {
+            html.lang = customEvent.detail.language;
+          }
+          translatePage(customEvent.detail.language);
+        });
+
+        const savedLang = localStorage.getItem('language') || 'es';
+        translatePage(savedLang);
+      })();
+    </script>
+  </body>
+</html>

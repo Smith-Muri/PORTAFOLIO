@@ -1,0 +1,73 @@
+---
+import {
+  FileCode,
+  Palette,
+  Braces,
+  Atom,
+  Server,
+  GitBranch
+} from "lucide-astro";
+
+const skills = [
+  {
+    name: "HTML",
+    icon: FileCode,
+    color: "text-orange-500",
+  },
+  {
+    name: "CSS",
+    icon: Palette,
+    color: "text-blue-500",
+  },
+  {
+    name: "JavaScript",
+    icon: Braces,
+    color: "text-yellow-400",
+  },
+  {
+    name: "React",
+    icon: Atom,
+    color: "text-cyan-400",
+  },
+  {
+    name: "Node.js",
+    icon: Server,
+    color: "text-green-500",
+  },
+  {
+    name: "Git",
+    icon: GitBranch,
+    color: "text-red-500",
+  },
+  {
+    name: "Java",
+    icon: FileCode,
+    color: "text-red-600",
+  },
+  {
+    name: "SQL Server",
+    icon: Server,
+    color: "text-blue-700",
+  }
+];
+---
+
+<section id="skills" class="py-20 relative">
+  <div class="container mx-auto px-6">
+    <h2 class="text-3xl font-bold text-white mb-12 flex items-center gap-3" data-label="skills.title">
+      <GitBranch class="w-8 h-8 text-red-500" />
+      Habilidades Técnicas
+    </h2>
+
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+      {skills.map(({ name, icon: Icon, color }) => (
+        <div class="group bg-white/5 border border-white/10 rounded-xl p-6 flex flex-col items-center justify-center gap-4 hover:bg-white/10 hover:border-red-500/50 transition-all duration-300 hover:-translate-y-1">
+          <Icon class={`w-8 h-8 ${color} transition-transform duration-300 group-hover:scale-110`} />
+          <span class="text-gray-300 font-medium group-hover:text-white">
+            {name}
+          </span>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

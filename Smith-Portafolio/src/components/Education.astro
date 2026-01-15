@@ -1,0 +1,44 @@
+---
+const education = [
+  {
+    degree: "Tecnología en Desarrollo de Software",
+    institution: "SENA",
+    year: "2025 - 2027",
+    description: "Especialización en desarrollo de software y analisis en desarrollo y arquitectura."
+  },
+  {
+    degree: "Tecnica en Desarrollo de Software",
+    institution: "Institución Universitaria Salazar y Herrera",
+    year: "2023 - 2024",
+    description: "Formación intensiva en logica de programación y tecnologías (JAVA, Ruby on Rails, JavaScript, C++)."
+  }
+];
+---
+
+<section id="education" class="py-20 bg-black/20">
+  <div class="container mx-auto px-6">
+    <h2 class="text-3xl font-bold text-white mb-12 flex items-center gap-3" data-label="education.title">
+      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-red-500">
+        <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+        <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+      </svg>
+      Educación
+    </h2>
+    <div class="relative border-l-2 border-white/10 ml-3 md:ml-6 space-y-12">
+      {education.map((item) => (
+        <div class="relative pl-8 md:pl-12">
+          <div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-red-500 border-4 border-black"></div>
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-2">
+            <h3 class="text-xl font-bold text-white">{item.degree}</h3>
+            <span class="text-sm text-red-400 font-mono bg-red-500/10 px-3 py-1 rounded-full w-fit mt-2 sm:mt-0">
+              {item.year}
+            </span>
+          </div>
+          
+          <div class="text-lg text-gray-300 font-medium mb-2">{item.institution}</div>
+          <p class="text-gray-400 leading-relaxed max-w-2xl">{item.description}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
