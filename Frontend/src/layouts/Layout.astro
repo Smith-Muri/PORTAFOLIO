@@ -132,14 +132,20 @@ import Footer from "../components/Footer.astro";
             map[id].classList.add('active');
           }
         }
-        
+
+        const controller = new AbortController();
+
         document.addEventListener('click', (e: Event) => {
           const target = e.target as HTMLElement;
           if (target && target.matches('.nav-link')) {
             const details = document.querySelector('details.nav-mobile') as HTMLDetailsElement;
             if (details && details.open) details.open = false;
           }
-        });
+        }, {signal: controller.signal});
+
+        document.addEventListener('astro:before-preparation',() =>{
+          controller.abort()
+        },{once: true})
 
         window.addEventListener('languagechange', (e: Event) => {
           const customEvent = e as CustomEvent;
@@ -148,11 +154,13 @@ import Footer from "../components/Footer.astro";
             html.lang = customEvent.detail.language;
           }
           translatePage(customEvent.detail.language);
-        });
+        }, {signal: controller.signal});
+
 
         const savedLang = localStorage.getItem('language') || 'es';
         translatePage(savedLang);
-      })();
+      }
+      )();
     </script>
   </body>
 </html>

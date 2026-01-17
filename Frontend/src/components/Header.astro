@@ -11,7 +11,6 @@ const { siteTitle = "Smith" } = Astro.props;
       <span class="logo-text">{siteTitle}</span>
     </a>
     
-    <!-- Desktop Navigation -->
     <div class="nav-links nav-desktop" id="nav-desktop">
       <a href="/#home" class="nav-link" data-label="nav.home">Inicio</a>
       <a href="/#about" class="nav-link" data-label="nav.about">Sobre mí</a>
@@ -21,9 +20,7 @@ const { siteTitle = "Smith" } = Astro.props;
       <a href="/#contact" class="nav-link" data-label="nav.contact">Contacto</a>
     </div>
 
-    <!-- Language and Mobile Menu Buttons -->
     <div class="nav-controls">
-      <!-- Language Selector -->
       <button class="language-btn" id="language-btn" aria-label="Change language" title="Cambiar idioma">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="10"></circle>
@@ -33,7 +30,6 @@ const { siteTitle = "Smith" } = Astro.props;
         <span class="lang-text">ES</span>
       </button>
 
-      <!-- Mobile Menu Button -->
       <button class="mobile-menu-btn" aria-label="Toggle menu" aria-expanded="false" id="mobile-menu-btn">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <line x1="4" y1="6" x2="20" y2="6"></line>
@@ -44,7 +40,6 @@ const { siteTitle = "Smith" } = Astro.props;
     </div>
   </div>
 
-  <!-- Language Dropdown -->
   <div class="language-dropdown" id="language-dropdown">
     <button class="lang-option" data-lang="es">
       <span class="flag">🇪🇸</span>
@@ -56,7 +51,6 @@ const { siteTitle = "Smith" } = Astro.props;
     </button>
   </div>
 
-  <!-- Mobile Navigation -->
   <div class="nav-links nav-mobile" id="mobile-menu">
     <a href="/#home" class="nav-link" data-label="nav.home">Inicio</a>
     <a href="/#about" class="nav-link" data-label="nav.about">Sobre mí</a>
@@ -114,7 +108,6 @@ const { siteTitle = "Smith" } = Astro.props;
     transform: rotate(180deg);
   }
 
-  /* Desktop Navigation */
   .nav-desktop {
     display: none;
   }
@@ -155,14 +148,12 @@ const { siteTitle = "Smith" } = Astro.props;
     width: 100%;
   }
 
-  /* Nav Controls Container */
   .nav-controls {
     display: flex;
     align-items: center;
     gap: 0.75rem;
   }
 
-  /* Language Button */
   .language-btn {
     display: flex;
     align-items: center;
