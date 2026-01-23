@@ -11,9 +11,8 @@ module.exports = {
       }
     }
   },
-  // Safelist to ensure dynamic and responsive utilities are included
+  
   safelist: [
-    // Common typographic sizes and responsive variants
     { pattern: /^(text|sm:text|md:text|lg:text)-/ },
     { pattern: /^(bg|from|via|to|hover:bg|hover:text)-/ },
     { pattern: /^(px|py|p|m|w|h|gap|grid|container|mx-auto|rounded)-/ },

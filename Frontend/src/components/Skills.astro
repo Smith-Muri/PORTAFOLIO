@@ -8,46 +8,47 @@ import {
   GitBranch
 } from "lucide-astro";
 
-const skills = [
+
+let apiSkills = [];
+
+try {
+  const res = await fetch("http://localhost:4000/api/skills");
+  apiSkills = await res.json();
+} catch (e) {
+  console.error("Error loading skills:", e);
+}
+
+interface Skill {
+  name: string;
+  color: string;
+}
+const skills: Skill[] = apiSkills.length > 0 ? (apiSkills as any[]).map((s: any): Skill => ({
+  name: s.name,
+  color: "text-blue-500",
+})) : [
   {
     name: "HTML",
-    icon: FileCode,
     color: "text-orange-500",
   },
   {
     name: "CSS",
-    icon: Palette,
     color: "text-blue-500",
   },
   {
     name: "JavaScript",
-    icon: Braces,
     color: "text-yellow-400",
   },
   {
     name: "React",
-    icon: Atom,
     color: "text-cyan-400",
   },
   {
     name: "Node.js",
-    icon: Server,
     color: "text-green-500",
   },
   {
     name: "Git",
-    icon: GitBranch,
     color: "text-red-500",
-  },
-  {
-    name: "Java",
-    icon: FileCode,
-    color: "text-red-600",
-  },
-  {
-    name: "SQL Server",
-    icon: Server,
-    color: "text-blue-700",
   }
 ];
 ---
@@ -60,9 +61,11 @@ const skills = [
     </h2>
 
     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-      {skills.map(({ name, icon: Icon, color }) => (
+      {skills.map(({ name, color }: Skill) => (
         <div class="group bg-white/5 border border-white/10 rounded-xl p-6 flex flex-col items-center justify-center gap-4 hover:bg-white/10 hover:border-red-500/50 transition-all duration-300 hover:-translate-y-1">
-          <Icon class={`w-8 h-8 ${color} transition-transform duration-300 group-hover:scale-110`} />
+          <div class={`w-8 h-8 ${color} transition-transform duration-300 group-hover:scale-110`}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+          </div>
           <span class="text-gray-300 font-medium group-hover:text-white">
             {name}
           </span>

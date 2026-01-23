@@ -1,0 +1,494 @@
+---
+// Admin - Education
+import AdminLayout from "../../layouts/AdminLayout.astro";
+---
+
+<AdminLayout title="Admin - Education">
+  <div class="min-h-screen bg-slate-900">
+    <!-- Navbar -->
+    <nav class="bg-slate-800 border-b border-slate-700 sticky top-0 z-50">
+      <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+        <div class="flex items-center gap-4">
+          <a href="/admin/dashboard" class="text-slate-400 hover:text-white">← Dashboard</a>
+          <h1 class="text-2xl font-bold text-white">🎓 Educación</h1>
+        </div>
+        <button id="logoutBtn" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition">
+          Salir
+        </button>
+      </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto px-6 py-12">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Form -->
+        <div class="lg:col-span-1">
+          <div class="bg-slate-800 border border-slate-700 rounded-lg p-8 sticky top-24">
+            <h2 class="text-xl font-bold text-white mb-6" id="formTitle">Nueva Educación</h2>
+
+            <form id="educationForm" class="space-y-4">
+              <input type="hidden" id="educationId" />
+
+              <div>
+                <label class="block text-sm font-medium text-slate-300 mb-2">Escuela *</label>
+                <input
+                  type="text"
+                  id="school"
+                  placeholder="Universidad Nacional"
+                  class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
+                  required
+                />
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-slate-300 mb-2">Título *</label>
+                <input
+                  type="text"
+                  id="degree"
+                  placeholder="Licenciado en Informática"
+                  class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
+                  required
+                />
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-slate-300 mb-2">Carrera</label>
+                <input
+                  type="text"
+                  id="field"
+                  placeholder="Ciencias de la Computación"
+                  class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
+                />
+              </div>
+
+              <div class="grid grid-cols-2 gap-2">
+                <div>
+                  <label class="block text-sm font-medium text-slate-300 mb-2">Inicio</label>
+                  <input
+                    type="number"
+                    id="startYear"
+                    min="1990"
+                    max="2100"
+                    placeholder="2020"
+                    class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
+                  />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-slate-300 mb-2">Fin</label>
+                  <input
+                    type="number"
+                    id="endYear"
+                    min="1990"
+                    max="2100"
+                    placeholder="2024"
+                    class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-slate-300 mb-2">Descripción</label>
+                <textarea
+                  id="description"
+                  placeholder="Detalles adicionales..."
+                  class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 resize-none"
+                  rows="2"></textarea>
+              </div>
+
+              <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition">
+                Guardar
+              </button>
+
+              <button
+                type="button"
+                id="cancelBtn"
+                class="w-full bg-slate-700 hover:bg-slate-600 text-white font-semibold py-2 rounded-lg transition hidden"
+              >
+                Cancelar
+              </button>
+            </form>
+
+            <div id="message" class="mt-4 p-3 rounded-lg text-sm hidden"></div>
+          </div>
+        </div>
+
+        <!-- List -->
+        <div class="lg:col-span-2">
+          <div id="educationList" class="space-y-4"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const BACKEND_URL = "http://localhost:4000";
+    let educations: any[] = [];
+    let editingId: string | null = null;
+
+    function getToken() {
+      return localStorage.getItem("token") || "";
+    }
+
+    function checkAuth() {
+      if (!getToken()) {
+        window.location.href = "/admin-login";
+      }
+    }
+
+    function showMessage(msg: string, type: "success" | "error") {
+      const el = document.getElementById("message")!;
+      el.textContent = msg;
+      el.className =
+        "mt-4 p-3 rounded-lg text-sm " +
+        (type === "success" ? "bg-green-600 text-white" : "bg-red-600 text-white");
+      el.classList.remove("hidden");
+      setTimeout(() => el.classList.add("hidden"), 4000);
+    }
+
+    async function loadEducation() {
+      try {
+        const res = await fetch(`${BACKEND_URL}/api/education`);
+        educations = await res.json();
+        render();
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    function render() {
+      document.getElementById("educationList")!.innerHTML = educations
+        .map(
+          (e) => `
+        <div class="bg-slate-800 border border-slate-700 rounded-lg p-6">
+          <div class="flex justify-between items-start mb-2">
+            <div>
+              <h3 class="text-lg font-bold text-white">${e.school}</h3>
+              <p class="text-sm text-blue-400">${e.degree}</p>
+            </div>
+            <div class="flex gap-2">
+              <button onclick="edit('${e.id}')" class="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700">✏️</button>
+              <button onclick="del('${e.id}')" class="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700">🗑️</button>
+            </div>
+          </div>
+          <p class="text-slate-400 text-sm">${e.field || "Sin especificar"}</p>
+          <p class="text-slate-400 text-sm mt-1">${e.startYear || ""} - ${e.endYear || "Presente"}</p>
+          ${e.description ? `<p class="text-slate-300 text-sm mt-2">${e.description}</p>` : ""}
+        </div>
+      `
+        )
+        .join("");
+    }
+
+    function edit(id: string) {
+      const edu = educations.find((e) => e.id == id);
+      if (!edu) return;
+
+      (document.getElementById("educationId") as HTMLInputElement).value = id;
+      (document.getElementById("school") as HTMLInputElement).value = edu.school;
+      (document.getElementById("degree") as HTMLInputElement).value = edu.degree;
+      (document.getElementById("field") as HTMLInputElement).value = edu.field || "";
+      (document.getElementById("startYear") as HTMLInputElement).value = edu.startYear || "";
+      (document.getElementById("endYear") as HTMLInputElement).value = edu.endYear || "";
+      (document.getElementById("description") as HTMLTextAreaElement).value = edu.description || "";
+
+      document.getElementById("formTitle")!.textContent = "Editar Educación";
+      document.getElementById("cancelBtn")!.classList.remove("hidden");
+
+      editingId = id;
+      document.querySelector(".sticky")!.scrollIntoView({ behavior: "smooth" });
+    }
+
+    function del(id: string) {
+      if (!confirm("¿Eliminar?")) return;
+      fetch(`${BACKEND_URL}/api/education/${id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${getToken()}` },
+      })
+        .then(() => {
+          loadEducation();
+          showMessage("Eliminada", "success");
+        })
+        .catch(() => showMessage("Error", "error"));
+    }
+
+    document.getElementById("educationForm")!.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const school = (document.getElementById("school") as HTMLInputElement).value;
+      const degree = (document.getElementById("degree") as HTMLInputElement).value;
+      const field = (document.getElementById("field") as HTMLInputElement).value;
+      const startYear = (document.getElementById("startYear") as HTMLInputElement).value;
+      const endYear = (document.getElementById("endYear") as HTMLInputElement).value;
+      const description = (document.getElementById("description") as HTMLTextAreaElement).value;
+
+      if (!school || !degree) {
+        showMessage("Completa los campos requeridos", "error");
+        return;
+      }
+
+      try {
+        const method = editingId ? "PUT" : "POST";
+        const url = editingId
+          ? `${BACKEND_URL}/api/education/${editingId}`
+          : `${BACKEND_URL}/api/education`;
+
+        const res = await fetch(url, {
+          method,
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getToken()}`,
+          },
+          body: JSON.stringify({
+            school,
+            degree,
+            field,
+            startYear: startYear ? parseInt(startYear) : null,
+            endYear: endYear ? parseInt(endYear) : null,
+            description,
+          }),
+        });
+
+        if (res.ok) {
+          showMessage(editingId ? "Actualizada" : "Creada", "success");
+          resetForm();
+          loadEducation();
+        } else {
+          showMessage("Error", "error");
+        }
+      } catch (e) {
+        showMessage("Error de conexión", "error");
+      }
+    });
+
+    function resetForm() {
+      (document.getElementById("educationForm") as HTMLFormElement).reset();
+      (document.getElementById("educationId") as HTMLInputElement).value = "";
+      document.getElementById("formTitle")!.textContent = "Nueva Educación";
+      document.getElementById("cancelBtn")!.classList.add("hidden");
+      editingId = null;
+    }
+
+    document.getElementById("cancelBtn")!.addEventListener("click", resetForm);
+    document.getElementById("logoutBtn")!.addEventListener("click", () => {
+      localStorage.removeItem("token");
+      window.location.href = "/admin-login";
+    });
+
+    checkAuth();
+    loadEducation();
+
+    (window as any).edit = edit;
+    (window as any).del = del;
+  </script>
+</Layout>
+  <div class="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800">
+    <!-- Header -->
+    <header class="bg-slate-900 border-b border-slate-700">
+      <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+        <h1 class="text-2xl font-bold text-white">Gestionar Educación</h1>
+        <a
+          href="/admin/dashboard"
+          class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition"
+        >
+          ← Volver
+        </a>
+      </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 py-8">
+      <!-- Formulario para crear educación -->
+      <div class="bg-slate-800 rounded-lg border border-slate-700 p-8 mb-8 max-w-2xl">
+        <h2 class="text-2xl font-bold text-white mb-6">Nuevo Registro Educativo</h2>
+        <form id="educationForm" class="space-y-6">
+          <div>
+            <label class="block text-sm font-medium text-slate-300 mb-2">Institución</label>
+            <input
+              type="text"
+              id="school"
+              class="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
+              placeholder="Universidad, Instituto, etc."
+              required
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-slate-300 mb-2">Título</label>
+            <input
+              type="text"
+              id="degree"
+              class="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
+              placeholder="Licenciatura, Ingeniería, etc."
+              required
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-slate-300 mb-2">Campo de Estudio</label>
+            <input
+              type="text"
+              id="field"
+              class="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
+              placeholder="Informática, Administración, etc."
+              required
+            />
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-slate-300 mb-2">Año de Inicio</label>
+              <input
+                type="number"
+                id="startYear"
+                class="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
+                placeholder="2020"
+                required
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-slate-300 mb-2">Año de Fin (opcional)</label>
+              <input
+                type="number"
+                id="endYear"
+                class="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
+                placeholder="2024"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-slate-300 mb-2">Descripción (opcional)</label>
+            <textarea
+              id="description"
+              rows="4"
+              class="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
+              placeholder="Detalles adicionales sobre tus estudios..."
+            ></textarea>
+          </div>
+
+          <button
+            type="submit"
+            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition"
+          >
+            Crear Registro
+          </button>
+        </form>
+
+        <div id="error" class="mt-4 text-red-400 text-sm hidden"></div>
+        <div id="success" class="mt-4 text-green-400 text-sm hidden"></div>
+      </div>
+
+      <!-- Lista de educación -->
+      <div class="space-y-4">
+        <h2 class="text-2xl font-bold text-white mb-4">Mi Educación</h2>
+        <div id="educationList" class="space-y-4"></div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const token = localStorage.getItem("token");
+    if (!token) {
+      window.location.href = "/admin-login";
+    }
+
+    const form = document.getElementById("educationForm") as HTMLFormElement;
+    const errorDiv = document.getElementById("error") as HTMLDivElement;
+    const successDiv = document.getElementById("success") as HTMLDivElement;
+    const educationList = document.getElementById("educationList") as HTMLDivElement;
+
+    // Cargar educación
+    async function loadEducation() {
+      try {
+        const response = await fetch("http://localhost:4000/api/education");
+        const education = await response.json();
+
+        educationList.innerHTML = education
+          .map(
+            (edu: any) => `
+          <div class="bg-slate-800 rounded-lg border border-slate-700 p-6">
+            <div class="flex justify-between items-start">
+              <div class="flex-1">
+                <h3 class="text-xl font-bold text-white">${edu.school}</h3>
+                <p class="text-blue-400 font-semibold">${edu.degree} en ${edu.field}</p>
+                <p class="text-slate-400 text-sm mt-2">${edu.startYear}${edu.endYear ? ` - ${edu.endYear}` : " - Presente"}</p>
+                ${edu.description ? `<p class="text-slate-300 mt-3">${edu.description}</p>` : ""}
+              </div>
+              <button onclick="deleteEducation(${edu.id})" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white text-sm rounded transition">
+                Eliminar
+              </button>
+            </div>
+          </div>
+        `
+          )
+          .join("");
+      } catch (error) {
+        console.error("Error loading education:", error);
+      }
+    }
+
+    // Crear educación
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      errorDiv.classList.add("hidden");
+      successDiv.classList.add("hidden");
+
+      const school = (document.getElementById("school") as HTMLInputElement).value;
+      const degree = (document.getElementById("degree") as HTMLInputElement).value;
+      const field = (document.getElementById("field") as HTMLInputElement).value;
+      const startYear = parseInt((document.getElementById("startYear") as HTMLInputElement).value);
+      const endYear = (document.getElementById("endYear") as HTMLInputElement).value
+        ? parseInt((document.getElementById("endYear") as HTMLInputElement).value)
+        : null;
+      const description = (document.getElementById("description") as HTMLTextAreaElement).value;
+
+      try {
+        const response = await fetch("http://localhost:4000/api/education", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ school, degree, field, startYear, endYear, description }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          errorDiv.textContent = data.error || "Error al crear registro";
+          errorDiv.classList.remove("hidden");
+          return;
+        }
+
+        successDiv.textContent = "¡Registro creado exitosamente!";
+        successDiv.classList.remove("hidden");
+        form.reset();
+        loadEducation();
+      } catch (error) {
+        errorDiv.textContent = "Error de conexión";
+        errorDiv.classList.remove("hidden");
+      }
+    });
+
+    // Eliminar educación
+    (window as any).deleteEducation = async (id: number) => {
+      if (!confirm("¿Estás seguro de que deseas eliminar este registro?")) return;
+
+      try {
+        const response = await fetch(`http://localhost:4000/api/education/${id}`, {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (response.ok) {
+          loadEducation();
+        } else {
+          alert("Error al eliminar registro");
+        }
+      } catch (error) {
+        alert("Error de conexión");
+      }
+    };
+
+    loadEducation();
+  </script>
+</AdminLayout>

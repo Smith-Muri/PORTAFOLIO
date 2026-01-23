@@ -1,0 +1,476 @@
+---
+// Admin - Projects
+import AdminLayout from "../../layouts/AdminLayout.astro";
+---
+
+<AdminLayout title="Admin - Projects">
+  <div class="min-h-screen bg-slate-900">
+    <!-- Navbar -->
+    <nav class="bg-slate-800 border-b border-slate-700 sticky top-0 z-50">
+      <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+        <div class="flex items-center gap-4">
+          <a href="/admin/dashboard" class="text-slate-400 hover:text-white">← Dashboard</a>
+          <h1 class="text-2xl font-bold text-white">🚀 Proyectos</h1>
+        </div>
+        <button id="logoutBtn" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition">
+          Salir
+        </button>
+      </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto px-6 py-12">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Form Panel -->
+        <div class="lg:col-span-1">
+          <div class="bg-slate-800 border border-slate-700 rounded-lg p-8 sticky top-24">
+            <h2 class="text-xl font-bold text-white mb-6" id="formTitle">Nuevo Proyecto</h2>
+
+            <form id="projectForm" class="space-y-4">
+              <input type="hidden" id="projectId" />
+
+              <div>
+                <label class="block text-sm font-medium text-slate-300 mb-2">Título *</label>
+                <input
+                  type="text"
+                  id="title"
+                  placeholder="Mi Proyecto Increíble"
+                  class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
+                  required
+                />
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-slate-300 mb-2">Descripción *</label>
+                <textarea
+                  id="description"
+                  placeholder="Describe qué hace tu proyecto..."
+                  class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 resize-none"
+                  rows="3"
+                  required></textarea>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-slate-300 mb-2">Tecnologías *</label>
+                <input
+                  type="text"
+                  id="technologies"
+                  placeholder="React, TypeScript, Tailwind"
+                  class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
+                  required
+                />
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-slate-300 mb-2">Link</label>
+                <input
+                  type="url"
+                  id="link"
+                  placeholder="https://ejemplo.com"
+                  class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
+                />
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-slate-300 mb-2">Imagen</label>
+                <input
+                  type="url"
+                  id="image"
+                  placeholder="https://ejemplo.com/img.jpg"
+                  class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
+                />
+              </div>
+
+              <button
+                type="submit"
+                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition"
+              >
+                Guardar
+              </button>
+
+              <button
+                type="button"
+                id="cancelBtn"
+                class="w-full bg-slate-700 hover:bg-slate-600 text-white font-semibold py-2 rounded-lg transition hidden"
+              >
+                Cancelar
+              </button>
+            </form>
+
+            <div id="message" class="mt-4 p-3 rounded-lg text-sm hidden"></div>
+          </div>
+        </div>
+
+        <!-- Projects List -->
+        <div class="lg:col-span-2">
+          <div id="projectsList" class="space-y-4"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const BACKEND_URL = "http://localhost:4000";
+    let projects: any[] = [];
+    let editingId: string | null = null;
+
+    function getToken() {
+      return localStorage.getItem("token") || "";
+    }
+
+    function checkAuth() {
+      if (!getToken()) {
+        window.location.href = "/admin-login";
+      }
+    }
+
+    function showMessage(msg: string, type: "success" | "error") {
+      const el = document.getElementById("message")!;
+      el.textContent = msg;
+      el.className =
+        "mt-4 p-3 rounded-lg text-sm " +
+        (type === "success" ? "bg-green-600 text-white" : "bg-red-600 text-white");
+      el.classList.remove("hidden");
+      setTimeout(() => el.classList.add("hidden"), 4000);
+    }
+
+    async function loadProjects() {
+      try {
+        const res = await fetch(`${BACKEND_URL}/api/projects`);
+        projects = await res.json();
+        render();
+      } catch (e) {
+        console.error(e);
+        showMessage("Error al cargar proyectos", "error");
+      }
+    }
+
+    function render() {
+      document.getElementById("projectsList")!.innerHTML = projects
+        .map(
+          (p) => `
+        <div class="bg-slate-800 border border-slate-700 rounded-lg p-6 hover:border-blue-500 transition">
+          <div class="flex justify-between items-start mb-3">
+            <div>
+              <h3 class="text-lg font-bold text-white">${p.title}</h3>
+              <p class="text-sm text-slate-400 mt-1">${p.technologies}</p>
+            </div>
+            <div class="flex gap-2">
+              <button onclick="edit('${p.id}')" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded transition">
+                ✏️ Editar
+              </button>
+              <button onclick="del('${p.id}')" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white text-sm rounded transition">
+                🗑️ Eliminar
+              </button>
+            </div>
+          </div>
+          <p class="text-slate-300 text-sm mb-3">${p.description}</p>
+          ${p.link ? `<a href="${p.link}" target="_blank" class="text-blue-400 hover:text-blue-300 text-sm">Ver →</a>` : ""}
+        </div>
+      `
+        )
+        .join("");
+    }
+
+    function edit(id: string) {
+      const project = projects.find((p) => p.id == id);
+      if (!project) return;
+
+      (document.getElementById("projectId") as HTMLInputElement).value = id;
+      (document.getElementById("title") as HTMLInputElement).value = project.title;
+      (document.getElementById("description") as HTMLTextAreaElement).value = project.description;
+      (document.getElementById("technologies") as HTMLInputElement).value = project.technologies;
+      (document.getElementById("link") as HTMLInputElement).value = project.link || "";
+      (document.getElementById("image") as HTMLInputElement).value = project.image || "";
+
+      document.getElementById("formTitle")!.textContent = "Editar Proyecto";
+      document.getElementById("cancelBtn")!.classList.remove("hidden");
+
+      editingId = id;
+      document.querySelector(".sticky")!.scrollIntoView({ behavior: "smooth" });
+    }
+
+    function del(id: string) {
+      if (!confirm("¿Eliminar este proyecto?")) return;
+      fetch(`${BACKEND_URL}/api/projects/${id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${getToken()}` },
+      })
+        .then((res) => {
+          if (res.ok) {
+            loadProjects();
+            showMessage("Proyecto eliminado", "success");
+          } else {
+            showMessage("Error al eliminar", "error");
+          }
+        })
+        .catch(() => showMessage("Error de conexión", "error"));
+    }
+
+    document.getElementById("projectForm")!.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const title = (document.getElementById("title") as HTMLInputElement).value;
+      const description = (document.getElementById("description") as HTMLTextAreaElement).value;
+      const technologies = (document.getElementById("technologies") as HTMLInputElement).value;
+      const link = (document.getElementById("link") as HTMLInputElement).value;
+      const image = (document.getElementById("image") as HTMLInputElement).value;
+
+      if (!title || !description || !technologies) {
+        showMessage("Completa los campos requeridos", "error");
+        return;
+      }
+
+      try {
+        const method = editingId ? "PUT" : "POST";
+        const url = editingId
+          ? `${BACKEND_URL}/api/projects/${editingId}`
+          : `${BACKEND_URL}/api/projects`;
+
+        const res = await fetch(url, {
+          method,
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getToken()}`,
+          },
+          body: JSON.stringify({ title, description, technologies, link, image }),
+        });
+
+        if (res.ok) {
+          showMessage(editingId ? "Proyecto actualizado" : "Proyecto creado", "success");
+          resetForm();
+          loadProjects();
+        } else {
+          const data = await res.json();
+          showMessage(data.error || "Error", "error");
+        }
+      } catch (e) {
+        showMessage("Error de conexión", "error");
+      }
+    });
+
+    function resetForm() {
+      (document.getElementById("projectForm") as HTMLFormElement).reset();
+      (document.getElementById("projectId") as HTMLInputElement).value = "";
+      document.getElementById("formTitle")!.textContent = "Nuevo Proyecto";
+      document.getElementById("cancelBtn")!.classList.add("hidden");
+      editingId = null;
+    }
+
+    document.getElementById("cancelBtn")!.addEventListener("click", resetForm);
+    document.getElementById("logoutBtn")!.addEventListener("click", () => {
+      localStorage.removeItem("token");
+      window.location.href = "/admin-login";
+    });
+
+    checkAuth();
+    loadProjects();
+
+    (window as any).edit = edit;
+    (window as any).del = del;
+  </script>
+</Layout>
+  <div class="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800">
+    <!-- Header -->
+    <header class="bg-slate-900 border-b border-slate-700">
+      <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+        <h1 class="text-2xl font-bold text-white">Gestionar Proyectos</h1>
+        <a
+          href="/admin/dashboard"
+          class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition"
+        >
+          ← Volver
+        </a>
+      </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 py-8">
+      <!-- Formulario para crear proyecto -->
+      <div class="bg-slate-800 rounded-lg border border-slate-700 p-8 mb-8 max-w-2xl">
+        <h2 class="text-2xl font-bold text-white mb-6">Nuevo Proyecto</h2>
+        <form id="projectForm" class="space-y-6">
+          <div>
+            <label class="block text-sm font-medium text-slate-300 mb-2">Título</label>
+            <input
+              type="text"
+              id="title"
+              class="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
+              placeholder="Mi Proyecto Increíble"
+              required
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-slate-300 mb-2">Descripción</label>
+            <textarea
+              id="description"
+              rows="4"
+              class="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
+              placeholder="Describe tu proyecto..."
+              required
+            ></textarea>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-slate-300 mb-2">Tecnologías (separadas por comas)</label>
+            <input
+              type="text"
+              id="technologies"
+              class="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
+              placeholder="React, TypeScript, Tailwind"
+              required
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-slate-300 mb-2">Enlace (opcional)</label>
+            <input
+              type="url"
+              id="link"
+              class="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
+              placeholder="https://..."
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-slate-300 mb-2">Imagen (URL, opcional)</label>
+            <input
+              type="url"
+              id="image"
+              class="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
+              placeholder="https://..."
+            />
+          </div>
+
+          <button
+            type="submit"
+            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition"
+          >
+            Crear Proyecto
+          </button>
+        </form>
+
+        <div id="error" class="mt-4 text-red-400 text-sm hidden"></div>
+        <div id="success" class="mt-4 text-green-400 text-sm hidden"></div>
+      </div>
+
+      <!-- Lista de proyectos -->
+      <div class="space-y-4">
+        <h2 class="text-2xl font-bold text-white mb-4">Mis Proyectos</h2>
+        <div id="projectsList" class="space-y-4"></div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const token = localStorage.getItem("token");
+    if (!token) {
+      window.location.href = "/admin-login";
+    }
+
+    const form = document.getElementById("projectForm") as HTMLFormElement;
+    const errorDiv = document.getElementById("error") as HTMLDivElement;
+    const successDiv = document.getElementById("success") as HTMLDivElement;
+    const projectsList = document.getElementById("projectsList") as HTMLDivElement;
+
+    // Cargar proyectos
+    async function loadProjects() {
+      try {
+        const response = await fetch("http://localhost:4000/api/projects");
+        const projects = await response.json();
+
+        projectsList.innerHTML = projects
+          .map(
+            (project: any) => `
+          <div class="bg-slate-800 rounded-lg border border-slate-700 p-6 flex justify-between items-start">
+            <div class="flex-1">
+              <h3 class="text-xl font-bold text-white">${project.title}</h3>
+              <p class="text-slate-400 text-sm mt-1">${project.description}</p>
+              <div class="mt-3 flex gap-2 flex-wrap">
+                ${project.technologies
+                  .split(",")
+                  .map((tech: string) => `<span class="px-2 py-1 bg-blue-700 text-blue-100 text-xs rounded">${tech.trim()}</span>`)
+                  .join("")}
+              </div>
+            </div>
+            <button onclick="deleteProject(${project.id})" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white text-sm rounded transition">
+              Eliminar
+            </button>
+          </div>
+        `
+          )
+          .join("");
+      } catch (error) {
+        console.error("Error loading projects:", error);
+      }
+    }
+
+    // Crear proyecto
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      errorDiv.classList.add("hidden");
+      successDiv.classList.add("hidden");
+
+      const title = (document.getElementById("title") as HTMLInputElement).value;
+      const description = (document.getElementById("description") as HTMLTextAreaElement).value;
+      const technologies = (document.getElementById("technologies") as HTMLInputElement).value;
+      const link = (document.getElementById("link") as HTMLInputElement).value;
+      const image = (document.getElementById("image") as HTMLInputElement).value;
+
+      try {
+        const response = await fetch("http://localhost:4000/api/projects", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            title,
+            description,
+            technologies,
+            link,
+            image,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          errorDiv.textContent = data.error || "Error al crear proyecto";
+          errorDiv.classList.remove("hidden");
+          return;
+        }
+
+        successDiv.textContent = "¡Proyecto creado exitosamente!";
+        successDiv.classList.remove("hidden");
+        form.reset();
+        loadProjects();
+      } catch (error) {
+        errorDiv.textContent = "Error de conexión";
+        errorDiv.classList.remove("hidden");
+      }
+    });
+
+    // Eliminar proyecto
+    (window as any).deleteProject = async (id: number) => {
+      if (!confirm("¿Estás seguro de que deseas eliminar este proyecto?")) return;
+
+      try {
+        const response = await fetch(`http://localhost:4000/api/projects/${id}`, {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (response.ok) {
+          loadProjects();
+        } else {
+          alert("Error al eliminar proyecto");
+        }
+      } catch (error) {
+        alert("Error de conexión");
+      }
+    };
+
+    loadProjects();
+  </script>
+</AdminLayout>

@@ -5,6 +5,26 @@ import Education from "../components/Education.astro";
 import Skills from "../components/Skills.astro";
 
 import { Github, Linkedin, Instagram, Download } from "lucide-astro";
+
+// Cargar datos desde la API
+const BACKEND_URL = "http://localhost:4000/api";
+
+let projects = [];
+let about = {};
+
+try {
+  const projectsRes = await fetch(`${BACKEND_URL}/projects`);
+  projects = await projectsRes.json();
+} catch (e) {
+  console.error("Error loading projects:", e);
+}
+
+try {
+  const aboutRes = await fetch(`${BACKEND_URL}/about`);
+  about = await aboutRes.json();
+} catch (e) {
+  console.error("Error loading about:", e);
+}
 ---
 
 <Layout title="Portafolio" >
@@ -161,30 +181,19 @@ import { Github, Linkedin, Instagram, Download } from "lucide-astro";
       </div>
 
       <div class="projects-grid reveal delay-100">
-        <ProjectCard
-          title="Sitio Web de Modelaje"
-          titleKey="projects.modelWeb.title"
-          description="Sitio web sobre modalej, donde abarca varios modelos, eventos, cultara y mercado de la Moda."
-          descriptionKey="projects.modelWeb.description"
-          tags={["React", "TypeScrit", ".NET C#", "SQL Server"]}
-          href="#"
-        />
-        <ProjectCard
-          title="Portfolio"
-          titleKey="projects.portfolio.title"
-          description="Portafolio personal."
-          descriptionKey="projects.portfolio.description"
-          tags={["Astro", "Tailwind", "Node.js"]}
-          href="#"
-        />
-        <ProjectCard
-          title="Proximamente"
-          titleKey="projects.upcoming.title"
-          description="Proximamente."
-          descriptionKey="projects.upcoming.description"
-          tags={["JavaScript"]}
-          href="#"
-        />
+        {projects && projects.length > 0 ? (
+          projects.map((project: any): any => (
+            <ProjectCard
+              title={project.title}
+              description={project.description}
+              tags={(project.technologies || "").split(",").map((t: any): string => t.trim()).filter(Boolean)}
+              href={project.link || "#"}
+              image={project.image}
+            />
+          ))
+        ) : (
+          <p class="text-center py-8 text-slate-400">No hay proyectos aún. ¡Agrega uno en el admin!</p>
+        )}
       </div>
     </div>
   </section>

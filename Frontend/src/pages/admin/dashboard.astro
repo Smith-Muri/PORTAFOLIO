@@ -1,0 +1,374 @@
+---
+import AdminLayout from "../../layouts/AdminLayout.astro";
+---
+
+<AdminLayout title="Admin Dashboard">
+<AdminLayout title="Admin Dashboard">
+  <div class="min-h-screen bg-slate-900">
+    <nav class="bg-slate-800 border-b border-slate-700">
+      <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+        <div>
+          <h1 class="text-2xl font-bold text-white">Panel de Control</h1>
+          <p class="text-slate-400 text-sm">Administra tu portafolio</p>
+        </div>
+        <button
+          id="logoutBtn"
+          class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded transition"
+        >
+          Cerrar Sesión
+        </button>
+      </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto px-6 py-12">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+        <a href="/admin/about" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg p-6 transition transform hover:scale-105">
+          <div class="text-4xl mb-3">📝</div>
+          <h3 class="text-lg font-bold text-white mb-1">About</h3>
+          <p class="text-slate-400 text-sm">Editar información personal</p>
+        </a>
+
+        <a href="/admin/projects" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg p-6 transition transform hover:scale-105">
+          <div class="text-4xl mb-3">🚀</div>
+          <h3 class="text-lg font-bold text-white mb-1">Proyectos</h3>
+          <p class="text-slate-400 text-sm">Gestionar proyectos</p>
+        </a>
+
+        <a href="/admin/skills" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg p-6 transition transform hover:scale-105">
+          <div class="text-4xl mb-3">⚙️</div>
+          <h3 class="text-lg font-bold text-white mb-1">Skills</h3>
+          <p class="text-slate-400 text-sm">Gestionar habilidades</p>
+        </a>
+
+        <a href="/admin/education" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg p-6 transition transform hover:scale-105">
+          <div class="text-4xl mb-3">🎓</div>
+          <h3 class="text-lg font-bold text-white mb-1">Educación</h3>
+          <p class="text-slate-400 text-sm">Gestionar educación</p>
+        </a>
+
+
+        <a href="/" target="_blank" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg p-6 transition transform hover:scale-105">
+          <div class="text-4xl mb-3">👁️</div>
+          <h3 class="text-lg font-bold text-white mb-1">Portfolio</h3>
+          <p class="text-slate-400 text-sm">Ver sitio público</p>
+        </a>
+      </div>
+
+      <div class="mt-12 bg-slate-800 border border-slate-700 rounded-lg p-8">
+        <h2 class="text-xl font-bold text-white mb-6">Estado</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div>
+            <p class="text-slate-400 text-sm">Backend</p>
+            <p class="text-green-400 font-semibold">✓ Activo - localhost:4000</p>
+          </div>
+          <div>
+            <p class="text-slate-400 text-sm">Base de Datos</p>
+            <p class="text-green-400 font-semibold">✓ SQLite</p>
+          </div>
+          <div>
+            <p class="text-slate-400 text-sm">Autenticación</p>
+            <p class="text-green-400 font-semibold">✓ JWT Activo</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const token = localStorage.getItem("token");
+    if (!token) {
+      window.location.href = "/admin-login";
+    }
+
+    document.getElementById("logoutBtn")!.addEventListener("click", () => {
+      localStorage.removeItem("token");
+      window.location.href = "/admin-login";
+    });
+  </script>
+</AdminLayout>
+    <nav class="bg-slate-900/80 backdrop-blur-xl border-b border-slate-700/50 sticky top-0 z-50">
+      <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+        <div>
+          <h1 class="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-600 bg-clip-text text-transparent">
+            ⚙️ Control Panel
+          </h1>
+          <p class="text-slate-400 text-sm">Gestiona tu portafolio profesional</p>
+        </div>
+        <button
+          id="logoutBtn"
+          class="px-6 py-2 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-semibold rounded-lg transition transform hover:scale-105 duration-200 shadow-lg"
+        >
+          🚪 Cerrar Sesión
+        </button>
+      </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto px-6 py-12">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
+        <div class="bg-gradient-to-br from-blue-600/20 to-blue-700/10 border border-blue-500/30 rounded-xl p-6 backdrop-blur-sm hover:border-blue-400/50 transition">
+          <div class="text-3xl mb-2">📝</div>
+          <p class="text-slate-400 text-sm">About</p>
+          <p class="text-2xl font-bold text-blue-300">1</p>
+        </div>
+        <div class="bg-gradient-to-br from-purple-600/20 to-purple-700/10 border border-purple-500/30 rounded-xl p-6 backdrop-blur-sm hover:border-purple-400/50 transition">
+          <div class="text-3xl mb-2">🚀</div>
+          <p class="text-slate-400 text-sm">Proyectos</p>
+          <p id="projectCount" class="text-2xl font-bold text-purple-300">0</p>
+        </div>
+        <div class="bg-gradient-to-br from-green-600/20 to-green-700/10 border border-green-500/30 rounded-xl p-6 backdrop-blur-sm hover:border-green-400/50 transition">
+          <div class="text-3xl mb-2">⚙️</div>
+          <p class="text-slate-400 text-sm">Skills</p>
+          <p id="skillCount" class="text-2xl font-bold text-green-300">0</p>
+        </div>
+        <div class="bg-gradient-to-br from-yellow-600/20 to-yellow-700/10 border border-yellow-500/30 rounded-xl p-6 backdrop-blur-sm hover:border-yellow-400/50 transition">
+          <div class="text-3xl mb-2">🎓</div>
+          <p class="text-slate-400 text-sm">Educación</p>
+          <p id="eduCount" class="text-2xl font-bold text-yellow-300">0</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+        <a href="/admin/about" class="group">
+          <div class="bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl p-8 h-full hover:shadow-2xl hover:scale-105 transition transform duration-300 cursor-pointer overflow-hidden relative">
+            <div class="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition"></div>
+            <div class="relative">
+              <div class="text-5xl mb-4">📝</div>
+              <h3 class="text-2xl font-bold text-white mb-2">About</h3>
+              <p class="text-blue-100 mb-4">Tu información personal y foto de perfil</p>
+              <div class="flex items-center text-blue-200 text-sm group-hover:translate-x-1 transition">
+                Editar →
+              </div>
+            </div>
+          </div>
+        </a>
+
+        <a href="/admin/projects" class="group">
+          <div class="bg-gradient-to-br from-purple-600 to-purple-700 rounded-xl p-8 h-full hover:shadow-2xl hover:scale-105 transition transform duration-300 cursor-pointer overflow-hidden relative">
+            <div class="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition"></div>
+            <div class="relative">
+              <div class="text-5xl mb-4">🚀</div>
+              <h3 class="text-2xl font-bold text-white mb-2">Proyectos</h3>
+              <p class="text-purple-100 mb-4">Crea y gestiona tus proyectos destacados</p>
+              <div class="flex items-center text-purple-200 text-sm group-hover:translate-x-1 transition">
+                Gestionar →
+              </div>
+            </div>
+          </div>
+        </a>
+
+        <a href="/admin/skills" class="group">
+          <div class="bg-gradient-to-br from-green-600 to-green-700 rounded-xl p-8 h-full hover:shadow-2xl hover:scale-105 transition transform duration-300 cursor-pointer overflow-hidden relative">
+            <div class="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition"></div>
+            <div class="relative">
+              <div class="text-5xl mb-4">⚙️</div>
+              <h3 class="text-2xl font-bold text-white mb-2">Skills</h3>
+              <p class="text-green-100 mb-4">Tus habilidades técnicas y niveles</p>
+              <div class="flex items-center text-green-200 text-sm group-hover:translate-x-1 transition">
+                Gestionar →
+              </div>
+            </div>
+          </div>
+        </a>
+
+        
+        <a href="/admin/education" class="group">
+          <div class="bg-gradient-to-br from-yellow-600 to-yellow-700 rounded-xl p-8 h-full hover:shadow-2xl hover:scale-105 transition transform duration-300 cursor-pointer overflow-hidden relative">
+            <div class="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition"></div>
+            <div class="relative">
+              <div class="text-5xl mb-4">🎓</div>
+              <h3 class="text-2xl font-bold text-white mb-2">Educación</h3>
+              <p class="text-yellow-100 mb-4">Tu formación académica</p>
+              <div class="flex items-center text-yellow-200 text-sm group-hover:translate-x-1 transition">
+                Gestionar →
+              </div>
+            </div>
+          </div>
+        </a>
+
+      
+        <a href="/" target="_blank" class="group">
+          <div class="bg-gradient-to-br from-pink-600 to-pink-700 rounded-xl p-8 h-full hover:shadow-2xl hover:scale-105 transition transform duration-300 cursor-pointer overflow-hidden relative">
+            <div class="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition"></div>
+            <div class="relative">
+              <div class="text-5xl mb-4">👁️</div>
+              <h3 class="text-2xl font-bold text-white mb-2">Portfolio</h3>
+              <p class="text-pink-100 mb-4">Ver tu sitio público</p>
+              <div class="flex items-center text-pink-200 text-sm group-hover:translate-x-1 transition">
+                Abrir →
+              </div>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      
+      <div class="mt-12 bg-gradient-to-r from-slate-800/50 to-slate-700/50 border border-slate-600/50 rounded-xl p-8 backdrop-blur-sm">
+        <h2 class="text-xl font-bold text-white mb-6 flex items-center gap-2">
+          ℹ️ Estado del Sistema
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div>
+            <p class="text-slate-400 text-sm mb-2">Backend</p>
+            <div class="flex items-center gap-2">
+              <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+              <span class="text-green-400 font-semibold">http://localhost:4000</span>
+            </div>
+          </div>
+          <div>
+            <p class="text-slate-400 text-sm mb-2">Frontend</p>
+            <div class="flex items-center gap-2">
+              <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+              <span class="text-green-400 font-semibold">http://localhost:4321</span>
+            </div>
+          </div>
+          <div>
+            <p class="text-slate-400 text-sm mb-2">Base de Datos</p>
+            <div class="flex items-center gap-2">
+              <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+              <span class="text-green-400 font-semibold">SQLite ✓</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    
+    const token = localStorage.getItem("token");
+    if (!token) {
+      window.location.href = "/admin-login";
+    }
+
+    // Logout
+    document.getElementById("logoutBtn")!.addEventListener("click", () => {
+      localStorage.removeItem("token");
+      window.location.href = "/admin-login";
+    });
+
+   
+    async function loadStats() {
+      try {
+        const projectsRes = await fetch("http://localhost:4000/api/projects");
+        const projects = await projectsRes.json();
+        document.getElementById("projectCount")!.textContent = projects.length;
+
+        const skillsRes = await fetch("http://localhost:4000/api/skills");
+        const skills = await skillsRes.json();
+        document.getElementById("skillCount")!.textContent = skills.length;
+
+        const eduRes = await fetch("http://localhost:4000/api/education");
+        const education = await eduRes.json();
+        document.getElementById("eduCount")!.textContent = education.length;
+      } catch (e) {
+        console.error("Error loading stats:", e);
+      }
+    }
+
+    loadStats();
+  </script>
+</Layout>
+    
+    <header class="bg-slate-900 border-b border-slate-700 sticky top-0 z-50">
+      <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+        <h1 class="text-2xl font-bold text-white">Panel de Admin</h1>
+        <button
+          id="logout"
+          class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition"
+        >
+          Cerrar Sesión
+        </button>
+      </div>
+    </header>
+
+    
+    <main class="max-w-7xl mx-auto px-4 py-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+       
+        <a
+          href="/admin/about"
+          class="bg-gradient-to-br from-blue-600 to-blue-700 p-6 rounded-lg shadow-lg hover:shadow-xl transition text-white"
+        >
+          <h3 class="text-xl font-bold mb-2">Sobre Mi</h3>
+          <p class="text-blue-100">Gestiona tu información personal</p>
+        </a>
+
+        <a
+          href="/admin/projects"
+          class="bg-gradient-to-br from-green-600 to-green-700 p-6 rounded-lg shadow-lg hover:shadow-xl transition text-white"
+        >
+          <h3 class="text-xl font-bold mb-2">Proyectos</h3>
+          <p class="text-green-100">Gestiona tus proyectos</p>
+        </a>
+
+        <a
+          href="/admin/skills"
+          class="bg-gradient-to-br from-purple-600 to-purple-700 p-6 rounded-lg shadow-lg hover:shadow-xl transition text-white"
+        >
+          <h3 class="text-xl font-bold mb-2">Habilidades</h3>
+          <p class="text-purple-100">Gestiona tus habilidades</p>
+        </a>
+
+        <a
+          href="/admin/education"
+          class="bg-gradient-to-br from-orange-600 to-orange-700 p-6 rounded-lg shadow-lg hover:shadow-xl transition text-white"
+        >
+          <h3 class="text-xl font-bold mb-2">Educación</h3>
+          <p class="text-orange-100">Gestiona tu educación</p>
+        </a>
+      </div>
+
+      
+      <div class="bg-slate-800 rounded-lg border border-slate-700 p-6">
+        <h2 class="text-2xl font-bold text-white mb-4">Estado del Sistema</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="bg-slate-700 p-4 rounded-lg">
+            <p class="text-slate-300 text-sm">Backend Status</p>
+            <p id="backendStatus" class="text-lg font-semibold text-yellow-400">Verificando...</p>
+          </div>
+          <div class="bg-slate-700 p-4 rounded-lg">
+            <p class="text-slate-300 text-sm">Admin Session</p>
+            <p id="sessionStatus" class="text-lg font-semibold text-green-400">Activa</p>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    
+    const token = localStorage.getItem("token");
+    if (!token) {
+      window.location.href = "/admin-login";
+    }
+
+    
+    const logoutBtn = document.getElementById("logout") as HTMLButtonElement;
+    if (logoutBtn) {
+      logoutBtn.addEventListener("click", () => {
+        localStorage.removeItem("token");
+        window.location.href = "/admin-login";
+      });
+    }
+
+    
+    async function checkBackendStatus() {
+      try {
+        const response = await fetch("http://localhost:4000/api/about");
+        const statusEl = document.getElementById("backendStatus") as HTMLElement;
+        if (response.ok) {
+          statusEl.textContent = "✓ Conectado";
+          statusEl.className = "text-lg font-semibold text-green-400";
+        } else {
+          throw new Error("Backend not responding");
+        }
+      } catch (error) {
+        const statusEl = document.getElementById("backendStatus") as HTMLElement;
+        statusEl.textContent = "✗ Desconectado";
+        statusEl.className = "text-lg font-semibold text-red-400";
+      }
+    }
+
+    checkBackendStatus();
+  </script>
+</Layout>
