@@ -1,18 +1,19 @@
 ---
 // Admin - Education
 import AdminLayout from "../../layouts/AdminLayout.astro";
+import "../../styles/admin.css";
 ---
 
 <AdminLayout title="Admin - Education">
-  <div class="min-h-screen bg-slate-900">
+  <div class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
     <!-- Navbar -->
-    <nav class="bg-slate-800 border-b border-slate-700 sticky top-0 z-50">
+    <nav class="admin-navbar sticky top-0 z-50">
       <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
         <div class="flex items-center gap-4">
-          <a href="/admin/dashboard" class="text-slate-400 hover:text-white">← Dashboard</a>
-          <h1 class="text-2xl font-bold text-white">🎓 Educación</h1>
+          <a href="/admin/dashboard" class="text-slate-400 hover:text-white transition-colors">← Dashboard</a>
+          <h1 class="section-title-admin">🎓 Educación</h1>
         </div>
-        <button id="logoutBtn" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition">
+        <button id="logoutBtn" class="btn-danger-admin">
           Salir
         </button>
       </div>
@@ -22,97 +23,98 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <!-- Form -->
         <div class="lg:col-span-1">
-          <div class="bg-slate-800 border border-slate-700 rounded-lg p-8 sticky top-24">
-            <h2 class="text-xl font-bold text-white mb-6" id="formTitle">Nueva Educación</h2>
+          <div class="form-container-admin sticky top-24">
+            <h2 class="text-xl font-bold text-slate-100 mb-6" id="formTitle">🎓 Nueva Educación</h2>
 
-            <form id="educationForm" class="space-y-4">
+            <form id="educationForm" class="space-y-5">
               <input type="hidden" id="educationId" />
 
-              <div>
-                <label class="block text-sm font-medium text-slate-300 mb-2">Escuela *</label>
+              <div class="form-group-admin">
+                <label>Escuela / Universidad *</label>
                 <input
                   type="text"
                   id="school"
                   placeholder="Universidad Nacional"
-                  class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
+                  class="admin-input"
                   required
                 />
               </div>
 
-              <div>
-                <label class="block text-sm font-medium text-slate-300 mb-2">Título *</label>
+              <div class="form-group-admin">
+                <label>Título / Carrera *</label>
                 <input
                   type="text"
                   id="degree"
                   placeholder="Licenciado en Informática"
-                  class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
+                  class="admin-input"
                   required
                 />
               </div>
 
-              <div>
-                <label class="block text-sm font-medium text-slate-300 mb-2">Carrera</label>
+              <div class="form-group-admin">
+                <label>Área de Estudio</label>
                 <input
                   type="text"
                   id="field"
                   placeholder="Ciencias de la Computación"
-                  class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
+                  class="admin-input"
                 />
               </div>
 
-              <div class="grid grid-cols-2 gap-2">
-                <div>
-                  <label class="block text-sm font-medium text-slate-300 mb-2">Inicio</label>
+              <div class="form-grid-2">
+                <div class="form-group-admin">
+                  <label>Año de Inicio</label>
                   <input
                     type="number"
                     id="startYear"
                     min="1990"
                     max="2100"
                     placeholder="2020"
-                    class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
+                    class="admin-input"
                   />
                 </div>
-                <div>
-                  <label class="block text-sm font-medium text-slate-300 mb-2">Fin</label>
+                <div class="form-group-admin">
+                  <label>Año de Fin</label>
                   <input
                     type="number"
                     id="endYear"
                     min="1990"
                     max="2100"
                     placeholder="2024"
-                    class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
+                    class="admin-input"
                   />
                 </div>
               </div>
 
-              <div>
-                <label class="block text-sm font-medium text-slate-300 mb-2">Descripción</label>
+              <div class="form-group-admin">
+                <label>Descripción Adicional</label>
                 <textarea
                   id="description"
-                  placeholder="Detalles adicionales..."
-                  class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 resize-none"
-                  rows="2"></textarea>
+                  placeholder="Detalles importantes sobre tu educación..."
+                  class="admin-textarea"
+                  style="min-height: 100px;"></textarea>
               </div>
 
-              <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition">
-                Guardar
+              <button type="submit" class="w-full btn-primary-admin mt-2">
+                💾 Guardar Educación
               </button>
 
               <button
                 type="button"
                 id="cancelBtn"
-                class="w-full bg-slate-700 hover:bg-slate-600 text-white font-semibold py-2 rounded-lg transition hidden"
+                class="w-full btn-secondary-admin hidden"
               >
-                Cancelar
+                ✕ Cancelar
               </button>
             </form>
 
-            <div id="message" class="mt-4 p-3 rounded-lg text-sm hidden"></div>
+            <div id="message" class="mt-4 alert-admin hidden"></div>
           </div>
         </div>
 
         <!-- List -->
         <div class="lg:col-span-2">
+          <h3 class="text-2xl font-bold text-slate-100 mb-6">📚 Tu Educación</h3>
           <div id="educationList" class="space-y-4"></div>
         </div>
       </div>
@@ -158,15 +160,15 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
       document.getElementById("educationList")!.innerHTML = educations
         .map(
           (e) => `
-        <div class="bg-slate-800 border border-slate-700 rounded-lg p-6">
+        <div class="card-admin">
           <div class="flex justify-between items-start mb-2">
             <div>
-              <h3 class="text-lg font-bold text-white">${e.school}</h3>
-              <p class="text-sm text-blue-400">${e.degree}</p>
+              <h3 class="text-lg font-bold text-slate-100">${e.school}</h3>
+              <p class="text-sm text-indigo-400">${e.degree}</p>
             </div>
             <div class="flex gap-2">
-              <button onclick="edit('${e.id}')" class="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700">✏️</button>
-              <button onclick="del('${e.id}')" class="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700">🗑️</button>
+              <button onclick="edit('${e.id}')" class="btn-primary-admin px-3 py-1 text-xs">✏️</button>
+              <button onclick="del('${e.id}')" class="btn-danger-admin px-3 py-1 text-xs">🗑️</button>
             </div>
           </div>
           <p class="text-slate-400 text-sm">${e.field || "Sin especificar"}</p>
@@ -190,7 +192,7 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
       (document.getElementById("endYear") as HTMLInputElement).value = edu.endYear || "";
       (document.getElementById("description") as HTMLTextAreaElement).value = edu.description || "";
 
-      document.getElementById("formTitle")!.textContent = "Editar Educación";
+      document.getElementById("formTitle")!.textContent = "✏️ Editar Educación";
       document.getElementById("cancelBtn")!.classList.remove("hidden");
 
       editingId = id;
@@ -261,7 +263,7 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
     function resetForm() {
       (document.getElementById("educationForm") as HTMLFormElement).reset();
       (document.getElementById("educationId") as HTMLInputElement).value = "";
-      document.getElementById("formTitle")!.textContent = "Nueva Educación";
+      document.getElementById("formTitle")!.textContent = "🎓 Nueva Educación";
       document.getElementById("cancelBtn")!.classList.add("hidden");
       editingId = null;
     }
@@ -277,218 +279,5 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
 
     (window as any).edit = edit;
     (window as any).del = del;
-  </script>
-</Layout>
-  <div class="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800">
-    <!-- Header -->
-    <header class="bg-slate-900 border-b border-slate-700">
-      <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-        <h1 class="text-2xl font-bold text-white">Gestionar Educación</h1>
-        <a
-          href="/admin/dashboard"
-          class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition"
-        >
-          ← Volver
-        </a>
-      </div>
-    </header>
-
-    <main class="max-w-7xl mx-auto px-4 py-8">
-      <!-- Formulario para crear educación -->
-      <div class="bg-slate-800 rounded-lg border border-slate-700 p-8 mb-8 max-w-2xl">
-        <h2 class="text-2xl font-bold text-white mb-6">Nuevo Registro Educativo</h2>
-        <form id="educationForm" class="space-y-6">
-          <div>
-            <label class="block text-sm font-medium text-slate-300 mb-2">Institución</label>
-            <input
-              type="text"
-              id="school"
-              class="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
-              placeholder="Universidad, Instituto, etc."
-              required
-            />
-          </div>
-
-          <div>
-            <label class="block text-sm font-medium text-slate-300 mb-2">Título</label>
-            <input
-              type="text"
-              id="degree"
-              class="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
-              placeholder="Licenciatura, Ingeniería, etc."
-              required
-            />
-          </div>
-
-          <div>
-            <label class="block text-sm font-medium text-slate-300 mb-2">Campo de Estudio</label>
-            <input
-              type="text"
-              id="field"
-              class="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
-              placeholder="Informática, Administración, etc."
-              required
-            />
-          </div>
-
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <label class="block text-sm font-medium text-slate-300 mb-2">Año de Inicio</label>
-              <input
-                type="number"
-                id="startYear"
-                class="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
-                placeholder="2020"
-                required
-              />
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-slate-300 mb-2">Año de Fin (opcional)</label>
-              <input
-                type="number"
-                id="endYear"
-                class="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
-                placeholder="2024"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label class="block text-sm font-medium text-slate-300 mb-2">Descripción (opcional)</label>
-            <textarea
-              id="description"
-              rows="4"
-              class="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
-              placeholder="Detalles adicionales sobre tus estudios..."
-            ></textarea>
-          </div>
-
-          <button
-            type="submit"
-            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition"
-          >
-            Crear Registro
-          </button>
-        </form>
-
-        <div id="error" class="mt-4 text-red-400 text-sm hidden"></div>
-        <div id="success" class="mt-4 text-green-400 text-sm hidden"></div>
-      </div>
-
-      <!-- Lista de educación -->
-      <div class="space-y-4">
-        <h2 class="text-2xl font-bold text-white mb-4">Mi Educación</h2>
-        <div id="educationList" class="space-y-4"></div>
-      </div>
-    </main>
-  </div>
-
-  <script>
-    const token = localStorage.getItem("token");
-    if (!token) {
-      window.location.href = "/admin-login";
-    }
-
-    const form = document.getElementById("educationForm") as HTMLFormElement;
-    const errorDiv = document.getElementById("error") as HTMLDivElement;
-    const successDiv = document.getElementById("success") as HTMLDivElement;
-    const educationList = document.getElementById("educationList") as HTMLDivElement;
-
-    // Cargar educación
-    async function loadEducation() {
-      try {
-        const response = await fetch("http://localhost:4000/api/education");
-        const education = await response.json();
-
-        educationList.innerHTML = education
-          .map(
-            (edu: any) => `
-          <div class="bg-slate-800 rounded-lg border border-slate-700 p-6">
-            <div class="flex justify-between items-start">
-              <div class="flex-1">
-                <h3 class="text-xl font-bold text-white">${edu.school}</h3>
-                <p class="text-blue-400 font-semibold">${edu.degree} en ${edu.field}</p>
-                <p class="text-slate-400 text-sm mt-2">${edu.startYear}${edu.endYear ? ` - ${edu.endYear}` : " - Presente"}</p>
-                ${edu.description ? `<p class="text-slate-300 mt-3">${edu.description}</p>` : ""}
-              </div>
-              <button onclick="deleteEducation(${edu.id})" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white text-sm rounded transition">
-                Eliminar
-              </button>
-            </div>
-          </div>
-        `
-          )
-          .join("");
-      } catch (error) {
-        console.error("Error loading education:", error);
-      }
-    }
-
-    // Crear educación
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      errorDiv.classList.add("hidden");
-      successDiv.classList.add("hidden");
-
-      const school = (document.getElementById("school") as HTMLInputElement).value;
-      const degree = (document.getElementById("degree") as HTMLInputElement).value;
-      const field = (document.getElementById("field") as HTMLInputElement).value;
-      const startYear = parseInt((document.getElementById("startYear") as HTMLInputElement).value);
-      const endYear = (document.getElementById("endYear") as HTMLInputElement).value
-        ? parseInt((document.getElementById("endYear") as HTMLInputElement).value)
-        : null;
-      const description = (document.getElementById("description") as HTMLTextAreaElement).value;
-
-      try {
-        const response = await fetch("http://localhost:4000/api/education", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ school, degree, field, startYear, endYear, description }),
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          errorDiv.textContent = data.error || "Error al crear registro";
-          errorDiv.classList.remove("hidden");
-          return;
-        }
-
-        successDiv.textContent = "¡Registro creado exitosamente!";
-        successDiv.classList.remove("hidden");
-        form.reset();
-        loadEducation();
-      } catch (error) {
-        errorDiv.textContent = "Error de conexión";
-        errorDiv.classList.remove("hidden");
-      }
-    });
-
-    // Eliminar educación
-    (window as any).deleteEducation = async (id: number) => {
-      if (!confirm("¿Estás seguro de que deseas eliminar este registro?")) return;
-
-      try {
-        const response = await fetch(`http://localhost:4000/api/education/${id}`, {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (response.ok) {
-          loadEducation();
-        } else {
-          alert("Error al eliminar registro");
-        }
-      } catch (error) {
-        alert("Error de conexión");
-      }
-    };
-
-    loadEducation();
   </script>
 </AdminLayout>

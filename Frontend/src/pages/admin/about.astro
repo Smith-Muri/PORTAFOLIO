@@ -1,65 +1,68 @@
 ---
 
 import AdminLayout from "../../layouts/AdminLayout.astro";
+import "../../styles/admin.css";
 ---
 
 <AdminLayout title="Admin - Sobre Mi">
-  <div class="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800">
-    <header class="bg-slate-900 border-b border-slate-700">
+  <div class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+    <!-- Header -->
+    <header class="admin-navbar">
       <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-        <h1 class="text-2xl font-bold text-white">Gestionar Sobre Mi</h1>
+        <h1 class="section-title-admin">📝 Gestionar Sobre Mi</h1>
         <a
           href="/admin/dashboard"
-          class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition"
+          class="text-slate-400 hover:text-white transition-colors"
         >
           ← Volver
         </a>
       </div>
     </header>
 
-    <main class="max-w-7xl mx-auto px-4 py-8">
-      <div class="bg-slate-800 rounded-lg border border-slate-700 p-8 max-w-2xl">
+    <main class="max-w-7xl mx-auto px-4 py-12">
+      <div class="form-container-admin max-w-2xl">
+        <h2 class="text-2xl font-bold text-slate-100 mb-8">✨ Información Personal</h2>
         <form id="aboutForm" class="space-y-6">
-          <div>
-            <label class="block text-sm font-medium text-slate-300 mb-2">Título</label>
+          <div class="form-group-admin">
+            <label>Tu Nombre / Título *</label>
             <input
               type="text"
               id="title"
-              class="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
-              placeholder="Mi Nombre"
+              class="admin-input"
+              placeholder="Mi Nombre Profesional"
             />
           </div>
 
-          <div>
-            <label class="block text-sm font-medium text-slate-300 mb-2">Descripción</label>
+          <div class="form-group-admin">
+            <label>Descripción / Bio *</label>
             <textarea
               id="description"
-              rows="6"
-              class="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
-              placeholder="Cuéntame sobre ti..."
+              class="admin-textarea"
+              style="min-height: 200px;"
+              placeholder="Cuéntame sobre ti, tu experiencia, tus logros y pasiones..."
             ></textarea>
           </div>
 
-          <div>
-            <label class="block text-sm font-medium text-slate-300 mb-2">URL de Imagen de Perfil</label>
+          <div class="form-group-admin">
+            <label>URL de Imagen de Perfil</label>
             <input
               type="url"
               id="profileImage"
-              class="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
+              class="admin-input"
               placeholder="https://..."
             />
           </div>
 
           <button
             type="submit"
-            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition"
+            class="w-full btn-primary-admin"
           >
-            Guardar Cambios
+            💾 Guardar Cambios
           </button>
         </form>
 
-        <div id="error" class="mt-4 text-red-400 text-sm hidden"></div>
-        <div id="success" class="mt-4 text-green-400 text-sm hidden"></div>
+        <div id="error" class="mt-6 alert-admin alert-error hidden"></div>
+        <div id="success" class="mt-6 alert-admin alert-success hidden"></div>
       </div>
     </main>
   </div>

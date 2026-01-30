@@ -1,18 +1,19 @@
 ---
 // Admin - Skills
 import AdminLayout from "../../layouts/AdminLayout.astro";
+import "../../styles/admin.css";
 ---
 
 <AdminLayout title="Admin - Skills">
-  <div class="min-h-screen bg-slate-900">
+  <div class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
     <!-- Navbar -->
-    <nav class="bg-slate-800 border-b border-slate-700 sticky top-0 z-50">
+    <nav class="admin-navbar sticky top-0 z-50">
       <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
         <div class="flex items-center gap-4">
-          <a href="/admin/dashboard" class="text-slate-400 hover:text-white">← Dashboard</a>
-          <h1 class="text-2xl font-bold text-white">⚙️ Skills</h1>
+          <a href="/admin/dashboard" class="text-slate-400 hover:text-white transition-colors">← Dashboard</a>
+          <h1 class="section-title-admin">⚙️ Habilidades</h1>
         </div>
-        <button id="logoutBtn" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition">
+        <button id="logoutBtn" class="btn-danger-admin">
           Salir
         </button>
       </div>
@@ -22,95 +23,139 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <!-- Form -->
         <div class="lg:col-span-1">
-          <div class="bg-slate-800 border border-slate-700 rounded-lg p-8 sticky top-24">
-            <h2 class="text-xl font-bold text-white mb-6" id="formTitle">Nueva Skill</h2>
+          <div class="form-container-admin sticky top-24">
+            <h2 class="text-xl font-bold text-slate-100 mb-6" id="formTitle">➕ Nueva Habilidad</h2>
 
-            <form id="skillForm" class="space-y-4">
+            <form id="skillForm" class="space-y-5">
               <input type="hidden" id="skillId" />
 
-              <div>
-                <label class="block text-sm font-medium text-slate-300 mb-2">Nombre *</label>
+              <div class="form-group-admin">
+                <label>Nombre de la Habilidad *</label>
                 <input
                   type="text"
                   id="name"
-                  placeholder="JavaScript"
-                  class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
+                  placeholder="JavaScript, React, etc."
+                  class="admin-input"
                   required
                 />
               </div>
 
-              <div>
-                <label class="block text-sm font-medium text-slate-300 mb-2">Nivel (1-100) *</label>
-                <div class="flex gap-2">
-                  <input
-                    type="range"
-                    id="levelRange"
-                    min="1"
-                    max="100"
-                    class="flex-1"
-                  />
-                  <input
-                    type="number"
-                    id="level"
-                    min="1"
-                    max="100"
-                    placeholder="85"
-                    class="w-16 px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label class="block text-sm font-medium text-slate-300 mb-2">Categoría</label>
+              <div class="form-group-admin">
+                <label>Categoría (Opcional)</label>
                 <input
                   type="text"
                   id="category"
                   placeholder="Frontend / Backend / DevOps"
-                  class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
+                  class="admin-input"
                 />
               </div>
 
-              <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition">
-                Guardar
+              <button type="submit" class="w-full btn-primary-admin mt-2">
+                💾 Guardar Habilidad
               </button>
 
               <button
                 type="button"
                 id="cancelBtn"
-                class="w-full bg-slate-700 hover:bg-slate-600 text-white font-semibold py-2 rounded-lg transition hidden"
+                class="w-full btn-secondary-admin hidden"
               >
-                Cancelar
+                ✕ Cancelar
               </button>
             </form>
 
-            <div id="message" class="mt-4 p-3 rounded-lg text-sm hidden"></div>
+            <div id="message" class="mt-4 alert-admin hidden"></div>
           </div>
         </div>
 
         <!-- List -->
         <div class="lg:col-span-2">
+          <h3 class="text-2xl font-bold text-slate-100 mb-6">🎯 Tus Habilidades</h3>
           <div id="skillsList" class="space-y-3"></div>
         </div>
       </div>
     </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+
   <script>
+    declare const feather: any;
+    // Mapa de iconos por skill
+    const skillIcons: Record<string, string> = {
+      // Lenguajes
+      "javascript": "code",
+      "typescript": "code",
+      "python": "code",
+      "java": "code",
+      "c#": "code",
+      "c++": "code",
+      "php": "code",
+      "ruby": "code",
+      "golang": "code",
+      "rust": "code",
+      
+      // Frontend
+      "react": "layers",
+      "vue": "layers",
+      "angular": "layers",
+      "svelte": "layers",
+      "html": "code",
+      "css": "code",
+      "tailwind": "palette",
+      "bootstrap": "layout",
+      "sass": "palette",
+      "webpack": "package",
+      
+      // Backend
+      "node.js": "server",
+      "nodejs": "server",
+      "express": "server",
+      "django": "server",
+      "flask": "server",
+      "fastapi": "server",
+      "spring": "server",
+      "laravel": "server",
+      "dotnet": "server",
+      ".net": "server",
+      
+      // Databases
+      "sql": "database",
+      "mysql": "database",
+      "postgresql": "database",
+      "mongodb": "database",
+      "firebase": "database",
+      "redis": "database",
+      
+      // DevOps
+      "docker": "box",
+      "kubernetes": "box",
+      "aws": "cloud",
+      "gcp": "cloud",
+      "azure": "cloud",
+      "git": "git-branch",
+      "linux": "terminal",
+      
+      // Other
+      "graphql": "layers",
+      "rest": "api",
+      "api": "api",
+      "testing": "check-circle",
+      "jest": "check-circle",
+    };
+
+    function getIconForSkill(skillName: string): string {
+      const normalized = skillName.toLowerCase().trim();
+      for (const [key, icon] of Object.entries(skillIcons)) {
+        if (normalized.includes(key) || key.includes(normalized)) {
+          return icon;
+        }
+      }
+      return "zap"; // Icon por defecto
+    }
+
     const BACKEND_URL = "http://localhost:4000";
     let skills: any[] = [];
     let editingId: string | null = null;
-
-    // Sync range and number input
-    document.getElementById("levelRange")!.addEventListener("input", (e) => {
-      const val = (e.target as HTMLInputElement).value;
-      (document.getElementById("level") as HTMLInputElement).value = val;
-    });
-
-    document.getElementById("level")!.addEventListener("input", (e) => {
-      const val = (e.target as HTMLInputElement).value;
-      (document.getElementById("levelRange") as HTMLInputElement).value = val;
-    });
 
     function getToken() {
       return localStorage.getItem("token") || "";
@@ -126,8 +171,8 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
       const el = document.getElementById("message")!;
       el.textContent = msg;
       el.className =
-        "mt-4 p-3 rounded-lg text-sm " +
-        (type === "success" ? "bg-green-600 text-white" : "bg-red-600 text-white");
+        "mt-4 alert-admin " +
+        (type === "success" ? "alert-success" : "alert-error");
       el.classList.remove("hidden");
       setTimeout(() => el.classList.add("hidden"), 4000);
     }
@@ -144,27 +189,32 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
 
     function render() {
       document.getElementById("skillsList")!.innerHTML = skills
-        .map(
-          (s) => `
-        <div class="bg-slate-800 border border-slate-700 rounded-lg p-4">
-          <div class="flex justify-between items-start mb-3">
-            <div class="flex-1">
-              <h3 class="font-bold text-white">${s.name}</h3>
-              <p class="text-sm text-slate-400">${s.category || "General"}</p>
+        .map((s) => {
+          const iconName = getIconForSkill(s.name);
+          return `
+            <div class="card-admin">
+              <div class="flex justify-between items-start mb-3">
+                <div class="flex items-center gap-3 flex-1">
+                  <div class="p-2 bg-indigo-500/20 rounded-lg">
+                    <i data-feather="${iconName}" class="w-6 h-6 text-indigo-400"></i>
+                  </div>
+                  <div>
+                    <h3 class="font-bold text-slate-100">${s.name}</h3>
+                    <p class="text-sm text-slate-400">${s.category || "Técnica"}</p>
+                  </div>
+                </div>
+                <div class="flex gap-2">
+                  <button onclick="edit('${s.id}')" class="btn-primary-admin px-3 py-1 text-xs">✏️</button>
+                  <button onclick="del('${s.id}')" class="btn-danger-admin px-3 py-1 text-xs">🗑️</button>
+                </div>
+              </div>
             </div>
-            <span class="bg-blue-600 text-white px-2 py-1 rounded text-sm font-semibold">${s.level}%</span>
-          </div>
-          <div class="w-full bg-slate-700 rounded-full h-2 mb-3">
-            <div class="bg-blue-500 h-2 rounded-full" style="width: ${s.level}%"></div>
-          </div>
-          <div class="flex gap-2">
-            <button onclick="edit('${s.id}')" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded transition">✏️</button>
-            <button onclick="del('${s.id}')" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white text-sm rounded transition">🗑️</button>
-          </div>
-        </div>
-      `
-        )
+          `;
+        })
         .join("");
+      if (typeof feather !== 'undefined') {
+        feather.replace();
+      }
     }
 
     function edit(id: string) {
@@ -173,11 +223,9 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
 
       (document.getElementById("skillId") as HTMLInputElement).value = id;
       (document.getElementById("name") as HTMLInputElement).value = skill.name;
-      (document.getElementById("level") as HTMLInputElement).value = skill.level;
-      (document.getElementById("levelRange") as HTMLInputElement).value = skill.level;
       (document.getElementById("category") as HTMLInputElement).value = skill.category || "";
 
-      document.getElementById("formTitle")!.textContent = "Editar Skill";
+      document.getElementById("formTitle")!.textContent = "✏️ Editar Habilidad";
       document.getElementById("cancelBtn")!.classList.remove("hidden");
 
       editingId = id;
@@ -200,11 +248,10 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
     document.getElementById("skillForm")!.addEventListener("submit", async (e) => {
       e.preventDefault();
       const name = (document.getElementById("name") as HTMLInputElement).value;
-      const level = (document.getElementById("level") as HTMLInputElement).value;
       const category = (document.getElementById("category") as HTMLInputElement).value;
 
-      if (!name || !level) {
-        showMessage("Completa los campos", "error");
+      if (!name) {
+        showMessage("Completa los campos requeridos", "error");
         return;
       }
 
@@ -218,7 +265,7 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
             "Content-Type": "application/json",
             Authorization: `Bearer ${getToken()}`,
           },
-          body: JSON.stringify({ name, level: parseInt(level), category }),
+          body: JSON.stringify({ name, level: 3, category }),
         });
 
         if (res.ok) {
@@ -236,7 +283,7 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
     function resetForm() {
       (document.getElementById("skillForm") as HTMLFormElement).reset();
       (document.getElementById("skillId") as HTMLInputElement).value = "";
-      document.getElementById("formTitle")!.textContent = "Nueva Skill";
+      document.getElementById("formTitle")!.textContent = "➕ Nueva Habilidad";
       document.getElementById("cancelBtn")!.classList.add("hidden");
       editingId = null;
     }
@@ -252,172 +299,5 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
 
     (window as any).edit = edit;
     (window as any).del = del;
-  </script>
-</Layout>
-  <div class="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800">
-    <!-- Header -->
-    <header class="bg-slate-900 border-b border-slate-700">
-      <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-        <h1 class="text-2xl font-bold text-white">Gestionar Habilidades</h1>
-        <a
-          href="/admin/dashboard"
-          class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition"
-        >
-          ← Volver
-        </a>
-      </div>
-    </header>
-
-    <main class="max-w-7xl mx-auto px-4 py-8">
-      <!-- Formulario para crear habilidad -->
-      <div class="bg-slate-800 rounded-lg border border-slate-700 p-8 mb-8 max-w-2xl">
-        <h2 class="text-2xl font-bold text-white mb-6">Nueva Habilidad</h2>
-        <form id="skillForm" class="space-y-6">
-          <div>
-            <label class="block text-sm font-medium text-slate-300 mb-2">Categoría</label>
-            <input
-              type="text"
-              id="category"
-              class="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
-              placeholder="Frontend, Backend, etc."
-              required
-            />
-          </div>
-
-          <div>
-            <label class="block text-sm font-medium text-slate-300 mb-2"
-              >Habilidades (separadas por comas)</label
-            >
-            <textarea
-              id="skills"
-              rows="4"
-              class="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
-              placeholder="React, Vue, Angular, etc."
-              required
-            ></textarea>
-          </div>
-
-          <button
-            type="submit"
-            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition"
-          >
-            Crear Habilidad
-          </button>
-        </form>
-
-        <div id="error" class="mt-4 text-red-400 text-sm hidden"></div>
-        <div id="success" class="mt-4 text-green-400 text-sm hidden"></div>
-      </div>
-
-      <!-- Lista de habilidades -->
-      <div class="space-y-4">
-        <h2 class="text-2xl font-bold text-white mb-4">Mis Habilidades</h2>
-        <div id="skillsList" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
-      </div>
-    </main>
-  </div>
-
-  <script>
-    const token = localStorage.getItem("token");
-    if (!token) {
-      window.location.href = "/admin-login";
-    }
-
-    const form = document.getElementById("skillForm") as HTMLFormElement;
-    const errorDiv = document.getElementById("error") as HTMLDivElement;
-    const successDiv = document.getElementById("success") as HTMLDivElement;
-    const skillsList = document.getElementById("skillsList") as HTMLDivElement;
-
-    // Cargar habilidades
-    async function loadSkills() {
-      try {
-        const response = await fetch("http://localhost:4000/api/skills");
-        const skills = await response.json();
-
-        skillsList.innerHTML = skills
-          .map(
-            (skill: any) => `
-          <div class="bg-slate-800 rounded-lg border border-slate-700 p-6">
-            <h3 class="text-xl font-bold text-white mb-3">${skill.category}</h3>
-            <div class="flex flex-wrap gap-2 mb-4">
-              ${skill.skills
-                .split(",")
-                .map((s: string) => `<span class="px-2 py-1 bg-purple-700 text-purple-100 text-sm rounded">${s.trim()}</span>`)
-                .join("")}
-            </div>
-            <button onclick="deleteSkill(${skill.id})" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white text-sm rounded transition">
-              Eliminar
-            </button>
-          </div>
-        `
-          )
-          .join("");
-      } catch (error) {
-        console.error("Error loading skills:", error);
-      }
-    }
-
-    // Crear habilidad
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      errorDiv.classList.add("hidden");
-      successDiv.classList.add("hidden");
-
-      const category = (document.getElementById("category") as HTMLInputElement).value;
-      const skills = (document.getElementById("skills") as HTMLTextAreaElement).value
-        .split(",")
-        .map((s) => s.trim());
-
-      try {
-        const response = await fetch("http://localhost:4000/api/skills", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ category, skills }),
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          errorDiv.textContent = data.error || "Error al crear habilidad";
-          errorDiv.classList.remove("hidden");
-          return;
-        }
-
-        successDiv.textContent = "¡Habilidad creada exitosamente!";
-        successDiv.classList.remove("hidden");
-        form.reset();
-        loadSkills();
-      } catch (error) {
-        errorDiv.textContent = "Error de conexión";
-        errorDiv.classList.remove("hidden");
-      }
-    });
-
-    // Eliminar habilidad
-    (window as any).deleteSkill = async (id: number) => {
-      if (!confirm("¿Estás seguro de que deseas eliminar esta habilidad?")) return;
-
-      try {
-        const response = await fetch(`http://localhost:4000/api/skills/${id}`, {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (response.ok) {
-          loadSkills();
-        } else {
-          alert("Error al eliminar habilidad");
-        }
-      } catch (error) {
-        alert("Error de conexión");
-      }
-    };
-
-    loadSkills();
   </script>
 </AdminLayout>
